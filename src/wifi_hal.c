@@ -1726,7 +1726,7 @@ INT wifi_hal_addApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
     }
     vap = &interface->vap_info;
 
-    key = to_mac_str(sta_mac, sta_mac_str);
+    key = to_mac_str(DeviceMacAddress, sta_mac_str);
     
     wifi_hal_dbg_print("%s:%d: Interface: %s MAC: %s\n", __func__, __LINE__, interface->name, key);
 
@@ -1765,6 +1765,14 @@ INT wifi_hal_addApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
         return RETURN_ERR;
     }
 
+    if ((vap->u.bss_info.mac_filter_enable == true) &&
+        (vap->u.bss_info.mac_filter_mode == wifi_mac_filter_mode_black_list)) {
+        if (nl80211_kick_device(interface, DeviceMacAddress) != 0) {
+            wifi_hal_error_print("%s:%d: Unable to kick MAC %s on ap_index %d\n", __func__,
+                __LINE__, DeviceMacAddress, apIndex);
+        }
+    }
+
     return 0;
 }
 #else
@@ -1773,6 +1781,7 @@ INT wifi_hal_addApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
     wifi_interface_info_t *interface = NULL;
     wifi_vap_info_t *vap;
     acl_map_t *acl_map = NULL;
+    mac_address_t sta_mac;
 
     interface = get_interface_by_vap_index(apIndex);
     if(!interface){
@@ -1816,6 +1825,15 @@ INT wifi_hal_addApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
     if (nl80211_set_acl(interface) != 0) {
         wifi_hal_error_print("%s:%d: MAC %s nl80211_set_acl failure for ap_index:%d\n", __func__, __LINE__, DeviceMacAddress, apIndex);
         return RETURN_ERR;
+    }
+
+    to_mac_bytes(DeviceMacAddress, sta_mac);
+    if ((vap->u.bss_info.mac_filter_enable == true) &&
+        (vap->u.bss_info.mac_filter_mode == wifi_mac_filter_mode_black_list)) {
+        if (nl80211_kick_device(interface, DeviceMacAddress) != 0) {
+            wifi_hal_error_print("%s:%d: Unable to kick MAC %s on ap_index %d\n", __func__,
+                __LINE__, DeviceMacAddress, apIndex);
+        }
     }
 
     return 0;
