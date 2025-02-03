@@ -23,7 +23,6 @@
 #include "ieee80211.h"
 
 const char dpp_oui[3] = {0x50, 0x6f, 0x9a};
-#define printf wifi_dpp_dbg_print
 
 int handle_assoc_rsp_frame(INT ap_index, mac_address_t sta_mac, unsigned char *frame, UINT len) 
 {
@@ -69,6 +68,7 @@ int handle_auth_frame(INT ap_index, mac_address_t sta_mac, unsigned char *frame,
 
 int handle_gas_init_public_action_frame(INT ap_index, mac_address_t sta_mac, unsigned char *public_action_data, UINT len)
 {
+#if 0
 	unsigned short query_len, *pquery_len;
 	unsigned char *query_req;
 	wifi_advertisementProtoElement_t *adv_proto_elem;
@@ -78,7 +78,7 @@ int handle_gas_init_public_action_frame(INT ap_index, mac_address_t sta_mac, uns
 	adv_proto_elem = &pgas_req->proto_elem;	
 	adv_tuple = &adv_proto_elem->proto_tuple;
 
-	printf("%s:%d: advertisement proto element id:%d length:%d\n", __func__, __LINE__, adv_proto_elem->id, adv_proto_elem->len);
+	//printf("%s:%d: advertisement proto element id:%d length:%d\n", __func__, __LINE__, adv_proto_elem->id, adv_proto_elem->len);
 
 	pquery_len = (unsigned short*)((unsigned char *)&adv_proto_elem->proto_tuple + adv_proto_elem->len);
 	query_len = *pquery_len;
@@ -89,25 +89,27 @@ int handle_gas_init_public_action_frame(INT ap_index, mac_address_t sta_mac, uns
 		case wifi_adv_proto_id_vendor_specific:
 			if ((adv_tuple->len == sizeof(dpp_oui) + 2) && (memcmp(adv_tuple->oui, dpp_oui, sizeof(dpp_oui)) == 0) && 
 					(*(adv_tuple->oui + sizeof(dpp_oui)) == DPP_OUI_TYPE) && (*(adv_tuple->oui + sizeof(dpp_oui) + 1) == DPP_CONFPROTO)) {
-				printf("%s:%d dpp gas initial req frame received callback, length:%d\n", __func__, __LINE__, query_len);
-   				callback_dpp_config_req_frame_received(ap_index, sta_mac, pgas_req->token, query_req, query_len);
+				//printf("%s:%d dpp gas initial req frame received callback, length:%d\n", __func__, __LINE__, query_len);
+   				//callback_dpp_config_req_frame_received(ap_index, sta_mac, pgas_req->token, query_req, query_len);
 
 			}
 			break;
 
 		case wifi_adv_proto_id_anqp:
-			printf("%s:%d anqp gas initial req frame received call back, length:%d\n", __func__, __LINE__, query_len);
-   			callback_anqp_gas_init_frame_received(ap_index, sta_mac, pgas_req->token, query_req, query_len);
+			//printf("%s:%d anqp gas initial req frame received call back, length:%d\n", __func__, __LINE__, query_len);
+   			//callback_anqp_gas_init_frame_received(ap_index, sta_mac, pgas_req->token, query_req, query_len);
 			break;
 
 		default:
 			break;
 	}
+#endif
         return RETURN_OK;
 }
 
 int handle_vendor_public_action_frame(INT ap_index, mac_address_t sta_mac, unsigned char *public_action_data, UINT len)
 {
+#if 0
 	wifi_dppPublicActionFrameBody_t *frame;
 	wifi_dppOUI *frame_oui;
 
@@ -116,11 +118,12 @@ int handle_vendor_public_action_frame(INT ap_index, mac_address_t sta_mac, unsig
 
 	if ((frame != NULL) && (memcmp(frame_oui->oui, dpp_oui, sizeof(dpp_oui)) == 0) 
 				&& (frame_oui->oui_type == DPP_OUI_TYPE)) {
-      	printf("%s:%d callback_dpp_auth_frame_received, length:%d\n", __func__, __LINE__, len);
-       	callback_dpp_public_action_frame_received(ap_index, sta_mac, (wifi_dppPublicActionFrameBody_t*)public_action_data, len);
+      	//printf("%s:%d callback_dpp_auth_frame_received, length:%d\n", __func__, __LINE__, len);
+       	//callback_dpp_public_action_frame_received(ap_index, sta_mac, (wifi_dppPublicActionFrameBody_t*)public_action_data, len);
     } else {
 		// not dpp frame
 	}
+#endif
       return RETURN_OK;
 }
 

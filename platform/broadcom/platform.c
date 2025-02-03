@@ -3474,6 +3474,169 @@ void platform_bss_enable(char* ifname, bool enable)
 #endif
 #endif
 
+int enablePassPointSettings(int ap_index, BOOL passpoint_enable, BOOL downstream_disable, BOOL p2p_disable, BOOL layer2TIF)
+{
+	return 0;
+}
+
+INT wifi_setGASConfiguration(UINT advertisementID, wifi_GASConfiguration_t *input_struct)
+{
+    return RETURN_OK;
+}
+
+INT wifi_anqp_request_callback_register(wifi_anqp_request_callback_t anqpReqCallback)
+{
+        return RETURN_OK;
+}
+
+INT wifi_anqpSendResponse(UINT apIndex, mac_address_t sta, unsigned char token, wifi_anqp_node_t *head)
+{
+	return 0;
+}
+
+INT wifi_setRadioCountryCode(INT radioIndex, CHAR *CountryCode)
+{
+    return RETURN_OK;
+}
+
+INT wifi_setNeighborReports(UINT apIndex, UINT numNeighborReports,
+    wifi_NeighborReport_t *neighborReports)
+{
+   return RETURN_OK;
+}
+
+INT wifi_setRadioDfsEnable(INT radioIndex, BOOL enable) //Tr181
+{
+    return 0;
+}
+
+void wifi_apDisassociatedDevice_callback_register(wifi_apDisassociatedDevice_callback callback_proc)
+{
+    return;
+}
+
+INT wifi_setApMaxAssociatedDevices(INT apIndex, UINT number)
+{
+    return RETURN_OK;
+}
+
+INT wifi_applyRadioSettings(INT radioIndex)
+{
+	return 0;
+}
+
+void wifi_newApAssociatedDevice_callback_register(wifi_newApAssociatedDevice_callback callback_proc)
+{
+}
+
+void wifi_apDeAuthEvent_callback_register(wifi_apDeAuthEvent_callback callback_proc)
+{
+    return;
+}
+
+INT wifi_getRadioPercentageTransmitPower(INT radioIndex, ULONG *output_ulong) //Tr181
+{
+    *output_ulong = 0;
+
+    return RETURN_OK;
+}
+
+INT wifi_setApIsolationEnable(INT apIndex, BOOL enable)
+{
+
+    return RETURN_OK;
+}
+
+INT wifi_pushApRoamingConsortiumElement(INT apIndex, wifi_roamingConsortiumElement_t *infoElement)
+{
+    return RETURN_OK;
+}
+
+INT wifi_getApRoamingConsortiumElement(INT apIndex, wifi_roamingConsortiumElement_t *infoElement)
+{
+    return RETURN_OK;
+}
+
+INT wifi_getSSIDEnable(INT ssidIndex, BOOL *output_bool) //Tr181
+{
+	*output_bool  = true;
+	return RETURN_OK;
+}
+INT wifi_getApInterworkingElement(INT apIndex, wifi_InterworkingElement_t *output_struct)
+{
+	return RETURN_OK;
+}
+
+INT wifi_getApManagementFramePowerControl(INT apIndex, INT *output_dBm)
+{
+    return RETURN_OK;
+}
+
+INT wifi_setApManagementFramePowerControl(INT apIndex, INT dBm) /* Applying changes with wifi_applyRadioSettings() */
+{
+    return RETURN_OK;
+}
+
+INT wifi_enableCSIEngine(INT apIndex, mac_address_t sta, BOOL enable)
+{
+    return RETURN_OK;
+}
+
+void wifi_csi_callback_register(wifi_csi_callback callback_proc)
+{
+    return;
+}
+
+INT wifi_setApMacAddressControlMode(INT apIndex, INT filterMode)
+{
+
+    return RETURN_OK;
+}
+
+INT wifi_getRadioTransmitPowerSupported(INT radioIndex, CHAR *output_list) //Tr181
+{
+    return RETURN_OK;
+}
+
+INT wifi_getApEnable(INT apIndex, BOOL *output_bool)
+{
+    return RETURN_OK;
+}
+
+
+INT wifi_setRadioDfsAtBootUpEnable(INT radioIndex, BOOL enable)
+{
+
+    return 0;
+}
+
+INT wifi_getRadioDfsAtBootUpEnable(INT radioIndex, BOOL *output_bool)
+{
+    return 0;
+}
+
+INT wifi_steering_eventRegister(wifi_steering_eventCB_t event_cb)
+{
+
+    return RETURN_OK;
+}
+
+INT wifi_sendActionFrame(INT apIndex, mac_address_t MacAddr, UINT frequency, UCHAR *frame, UINT len)
+{
+    return RETURN_OK;
+}
+
+INT wifi_getApDeviceRSSI(INT ap_index, CHAR *MAC, INT *output_RSSI)
+{
+    return 0;
+}
+
+INT wifi_steering_clientDisconnect(UINT steeringgroupIndex, INT apIndex, mac_address_t client_mac,
+    wifi_disconnectType_t type, UINT reason)
+{
+    return 0;
+}
+
 #ifdef CONFIG_IEEE80211BE
 int wifi_drv_set_ap_mlo(struct nl_msg *msg, void *priv, struct wpa_driver_ap_params *params) {
     //TODO: FIXME

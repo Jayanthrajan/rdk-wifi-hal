@@ -77,7 +77,7 @@ int handle_8021x_frame(INT ap_index, mac_address_t sta_mac, unsigned char *frame
                callbacks->eapol_frame_rx_callback(ap_index, sta_mac, data->type, data, len);
                return RETURN_OK;
        } else {
-               wifi_rdk_hal_dbg_print("Packet is not of EAP/EAPOL type %s:%d\n", __func__, __LINE__);
+               //wifi_rdk_hal_dbg_print("Packet is not of EAP/EAPOL type %s:%d\n", __func__, __LINE__);
                return 0;
        }
        return RETURN_OK;
