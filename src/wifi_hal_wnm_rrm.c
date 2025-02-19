@@ -597,7 +597,7 @@ int wifi_rrm_send_beacon_req(wifi_interface_info_t *interface, const u8 *addr,
     struct wpabuf *buf;
     struct sta_info *sta = NULL;
     u8 *len;
-    int ret, i;
+    int i;
     static const u8 wildcard_bssid[ETH_ALEN] = {
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };
@@ -733,15 +733,12 @@ int wifi_rrm_send_beacon_req(wifi_interface_info_t *interface, const u8 *addr,
 
     /* Action + measurement type + token + reps + EID + len = 7 */
     *len = wpabuf_len(buf) - 7;
-
+	wifi_hal_send_mgmt_frame(interface->vap_info.vap_index, addr, 
+			wpabuf_head(buf), wpabuf_len(buf), 0);
+/*
     ret = hostapd_drv_send_action(hapd, hapd->iface->freq, 0, addr,
-                    wpabuf_head(buf), wpabuf_len(buf));
+                    wpabuf_head(buf), wpabuf_len(buf));*/
     wpabuf_free(buf);
-    if (ret) {
-        wifi_hal_error_print("%s:%d: hostapd_drv_send_action() error\n", __func__, __LINE__);
-        return -1;
-    }
-
     return hapd->beacon_req_token;
 }
 #endif
