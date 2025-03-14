@@ -2280,6 +2280,68 @@ static int get_eapol_reply_counter(uint8_t *data, size_t data_len)
     return eapol_key->replay_counter[WPA_REPLAY_COUNTER_LEN - 1];
 }
 
+#if defined(WIFI_EMULATOR_CHANGE) || defined(CONFIG_EXTERNAL_AGENT)
+static void push_eapol_to_char_dev(char *buff, int buflen, struct ieee8023_hdr *eth_hdr)
+{
+    static int fd_c = -1;
+    unsigned char c_buff[2048];
+    unsigned char *t_buff = c_buff;
+    unsigned int type = wlan_emu_msg_type_frm80211, ops_type = 0;
+#ifdef WIFI_EMULATOR_CHANGE
+    if ((access(ONEWIFI_TESTSUITE_TMPFILE, R_OK)) == 0)
+#endif
+    {
+        if (fd_c < 0) {
+            fd_c = open("/dev/rdkfmac_dev", O_RDWR);
+            if (fd_c < 0) {
+                wifi_hal_info_print("%s:%d: failed to open to char dev\n", __func__, __LINE__);
+            }
+        }
+        if (fd_c > 0) {
+            memset(t_buff, 0, 2048);
+            memcpy(t_buff, &type, sizeof(unsigned int));
+            t_buff += sizeof(unsigned int);
+
+            memcpy(t_buff, &ops_type, sizeof(unsigned int));
+            t_buff += sizeof(unsigned int);
+
+            unsigned int len = buflen + sizeof(eapol_qos_info) + sizeof(llc_info);
+            memcpy(t_buff, &len, sizeof(unsigned int));
+            t_buff += sizeof(unsigned int);
+
+            memcpy(t_buff, eth_hdr->src, ETH_ALEN);
+            t_buff += ETH_ALEN;
+
+            memcpy(t_buff, eth_hdr->dest, ETH_ALEN);
+            t_buff += ETH_ALEN;
+
+            memcpy(eapol_qos_info + 4, eth_hdr->dest, ETH_ALEN);
+            memcpy(eapol_qos_info + 10, eth_hdr->src, ETH_ALEN);
+            memcpy(eapol_qos_info + 10 + ETH_ALEN, eth_hdr->src, ETH_ALEN);
+            memcpy(t_buff, eapol_qos_info, sizeof(eapol_qos_info));
+            t_buff += sizeof(eapol_qos_info);
+
+            memcpy(t_buff, llc_info, sizeof(llc_info));
+            t_buff += sizeof(llc_info);
+
+            unsigned char *eapol_tmp_buff = NULL;
+
+            eapol_tmp_buff = buff + 14;
+
+            memcpy(t_buff, eapol_tmp_buff, len);
+
+            if (write(fd_c, c_buff, 2048) < 0) {
+                wifi_hal_error_print("%s:%d: failed to write to char dev\n", __func__, __LINE__);
+            }
+
+            close(fd_c);
+            fd_c = -1;
+        }
+    }
+	return;
+}
+#endif //defined(WIFI_EMULATOR_CHANGE) || defined(CONFIG_EXTERNAL_AGENT)
+
 void recv_data_frame(wifi_interface_info_t *interface)
 {
     unsigned char buff[2048];
@@ -2292,9 +2354,7 @@ void recv_data_frame(wifi_interface_info_t *interface)
     union wpa_event_data event;
     struct ieee802_1x_hdr *hdr;
     mac_addr_str_t src_mac_str, dst_mac_str;
-#ifdef WIFI_EMULATOR_CHANGE
-    static int fd_c = -1;
-#endif
+
 
     vap = &interface->vap_info;
     saddr_len = sizeof(saddr);
@@ -2504,60 +2564,10 @@ void recv_data_frame(wifi_interface_info_t *interface)
         event.eapol_rx.src = (unsigned char *)&sta;
         event.eapol_rx.data = (unsigned char *)hdr;
         event.eapol_rx.data_len = buflen - sizeof(struct ieee8023_hdr);
+#if defined(WIFI_EMULATOR_CHANGE) || defined(CONFIG_EXTERNAL_AGENT)
         //Capture the EAPOL frames 2 and 4 on AP
-#ifdef WIFI_EMULATOR_CHANGE
-        if ((access(ONEWIFI_TESTSUITE_TMPFILE, R_OK)) == 0) {
-            if (fd_c < 0) {
-                fd_c = open("/dev/rdkfmac_dev", O_RDWR);
-                if (fd_c < 0) {
-                    wifi_hal_info_print("%s:%d: failed to open to char dev\n", __func__, __LINE__);
-                }
-            }
-            if (fd_c > 0) {
-                unsigned char c_buff[2048];
-                unsigned char *t_buff = c_buff;
-                unsigned int type = wlan_emu_msg_type_frm80211, ops_type = 0;
-                memset(t_buff, 0, 2048);
-                memcpy(t_buff, &type, sizeof(unsigned int));
-                t_buff += sizeof(unsigned int);
-
-                memcpy(t_buff, &ops_type, sizeof(unsigned int));
-                t_buff += sizeof(unsigned int);
-
-                unsigned int len = buflen + sizeof(eapol_qos_info) + sizeof(llc_info);
-                memcpy(t_buff, &len, sizeof(unsigned int));
-                t_buff += sizeof(unsigned int);
-
-                memcpy(t_buff, eth_hdr->src, ETH_ALEN);
-                t_buff += ETH_ALEN;
-
-                memcpy(t_buff, eth_hdr->dest, ETH_ALEN);
-                t_buff += ETH_ALEN;
-
-                memcpy(eapol_qos_info+4, eth_hdr->dest, ETH_ALEN);
-                memcpy(eapol_qos_info+10, eth_hdr->src, ETH_ALEN);
-                memcpy(eapol_qos_info+10+ETH_ALEN, eth_hdr->src, ETH_ALEN);
-                memcpy(t_buff, eapol_qos_info, sizeof(eapol_qos_info));
-                t_buff += sizeof(eapol_qos_info);
-
-                memcpy(t_buff, llc_info, sizeof(llc_info));
-                t_buff += sizeof(llc_info);
-
-                unsigned char *eapol_tmp_buff = NULL;
-
-                eapol_tmp_buff = buff + 14;
-
-                memcpy(t_buff, eapol_tmp_buff, len);
-
-                if (write(fd_c, c_buff, 2048) > 0) {
-//                    wifi_hal_dbg_print("%s:%d: write succesful bytes written : %d for EAPOL data\n", __func__, __LINE__, len);
-                }
-
-                close(fd_c);
-                fd_c = -1;
-            }
-        }
-#endif
+        push_eapol_to_char_dev(buff, buflen, eth_hdr);
+#endif //defined(WIFI_EMULATOR_CHANGE) || defined(CONFIG_EXTERNAL_AGENT
 
         buflen -= sizeof(struct ieee8023_hdr);
         wifi_hal_info_print("%s:%d: interface:%s received eapol m%d from:%s to:%s "
@@ -2570,6 +2580,9 @@ void recv_data_frame(wifi_interface_info_t *interface)
         wpa_supplicant_event(&interface->u.ap.hapd, EVENT_EAPOL_RX, &event);
         pthread_mutex_unlock(&g_wifi_hal.hapd_lock);
     } else if (vap->vap_mode == wifi_vap_mode_sta) {
+#if defined(WIFI_EMULATOR_CHANGE) || defined(CONFIG_EXTERNAL_AGENT)
+        push_eapol_to_char_dev(buff, buflen, eth_hdr);
+#endif //defined(WIFI_EMULATOR_CHANGE) || defined(CONFIG_EXTERNAL_AGENT)
         if (interface->u.sta.wpa_sm) {
 #if HOSTAPD_VERSION >= 211 //2.11
             if (!interface->u.sta.wpa_sm->eapol || !eapol_sm_rx_eapol(interface->u.sta.wpa_sm->eapol,(unsigned char *)&sta,
