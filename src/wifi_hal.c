@@ -36,7 +36,6 @@
 #include "hostapd/eap_register.h"
 #include "ap/rrm.h"
 #include "ap/neighbor_db.h"
-
 #ifdef CONFIG_WIFI_EMULATOR
 #include "config_supplicant.h"
 #endif

@@ -155,9 +155,16 @@ extern "C" {
 
 #define MAX_FREQ_LIST_SIZE 128
 
+#ifndef BUF_SIZE
 #define BUF_SIZE         32
+#endif
+
 #define NL_SOCK_MAX_BUF_SIZE             262144
+
+#ifndef NVRAM_NAME_SIZE
 #define NVRAM_NAME_SIZE  32
+#endif
+
 #define WPS_METHODS_SIZE 512
 #define WPS_PIN_SIZE     9
 
