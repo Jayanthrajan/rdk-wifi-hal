@@ -47,13 +47,23 @@ else
 lib_LTLIBRARIES = librdk_wifihal.la
 librdk_wifihal_la_CPPFLAGS = -I$(top_srcdir)/./include $(CPPFLAGS) -I$(top_srcdir)/../util_crypto -I${PKG_CONFIG_SYSROOT_DIR}${includedir}/libnl3 -I${PKG_CONFIG_SYSROOT_DIR}${includedir}/rdk-wifi-libhostap/ -I${PKG_CONFIG_SYSROOT_DIR}${includedir}/rdk-wifi-libhostap/src/ -I${PKG_CONFIG_SYSROOT_DIR}${includedir}/rdk-wifi-libhostap/src/utils/ -I${PKG_CONFIG_SYSROOT_DIR}${includedir}/rdk-wifi-libhostap/src/ap/ -I${PKG_CONFIG_SYSROOT_DIR}${includedir}/rdk-wifi-libhostap/src/drivers/ -I$(top_srcdir)/../util
 librdk_wifihal_la_CFLAGS = -Wall -Werror -Wextra -Wno-unused-parameter -Wno-pointer-sign -Wno-sign-compare -Wno-type-limits -Wno-format-truncation -Wno-poison-system-directories -Wno-discarded-qualifiers
+if LEGACY_IMPLEMENTATION
+librdk_wifihal_la_SOURCES =
+else
 librdk_wifihal_la_SOURCES = wifi_hal_rx_test.c wifi_hal_data_rx.c wifi_hal_dpp.c wifi_hal_anqp.c wifi_hal_frame_test.c ../util_crypto/aes_siv.c wifi_tlv.c wifi_hal_rdk_util.c
+endif
+
 librdk_wifihal_la_LDFLAGS = -lm -lcjson -lssl -lcrypto
 
 if ONE_WIFIBUILD
 librdk_wifihal_la_LDFLAGS += -lhostap -lnl-3 -lnl-genl-3 -lnl-route-3
-librdk_wifihal_la_SOURCES += wifi_hal.c wifi_hal_hostapd.c wifi_hal_nl80211.c wifi_hal_nl80211_events.c wifi_hal_nl80211_utils.c collection.c wifi_hal_mgmt_rx_one_wifi.c wifi_hal_wnm_rrm.c
+if LEGACY_IMPLEMENTATION
+librdk_wifihal_la_SOURCES += wifi_hal_adapter.c wifi_hal_rdk_util.c
 else
+librdk_wifihal_la_SOURCES += wifi_hal.c wifi_hal_hostapd.c wifi_hal_nl80211.c wifi_hal_nl80211_events.c wifi_hal_nl80211_utils.c collection.c wifi_hal_mgmt_rx_one_wifi.c wifi_hal_wnm_rrm.c
+endif
+else
+librdk_wifihal_la_SOURCES =
 librdk_wifihal_la_SOURCES += wifi_hal_mgmt_rx.c
 endif
 
@@ -115,8 +125,11 @@ librdk_wifihal_la_LDFLAGS += -lrdkconfig
 endif
 
 if SKYSR213_PORT
+if LEGACY_IMPLEMENTATION
+else
 librdk_wifihal_la_CPPFLAGS += -I$(top_srcdir)/../platform/broadcom
 librdk_wifihal_la_SOURCES += ../platform/broadcom/platform.c
+endif
 endif
 
 if RASPBERRY_PI_PORT

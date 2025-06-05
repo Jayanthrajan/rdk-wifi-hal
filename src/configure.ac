@@ -38,9 +38,10 @@ AC_ARG_ENABLE([gtestapp],
                esac
              ],
              [echo "Gtestapp is disabled"])
-AM_CONDITIONAL([WITH_GTEST_SUPPORT], [test x$GTEST_SUPPORT_ENABLED = xtrue])
+AM_CONDITIONAL([WITH_GTEST_SUPPORT], [test "x$GTEST_SUPPORT_ENABLED" = "xtrue"])
 AM_CONDITIONAL([WIFI_EMULATOR], [test "x$WIFI_EMULATOR" = "xtrue"])
 AM_CONDITIONAL([ONE_WIFIBUILD], [test "x$ONE_WIFIBUILD" = "xtrue"])
+AM_CONDITIONAL([LEGACY_IMPLEMENTATION], [test "x$LEGACY_IMPLEMENTATION" = "xtrue"])
 AM_CONDITIONAL([RASPBERRY_PI_PORT], [test "x$RASPBERRY_PI_PORT" = "xtrue"])
 AM_CONDITIONAL([BANANA_PI_PORT], [test "x$BANANA_PI_PORT" = "xtrue"])
 AM_CONDITIONAL([TCXB7_PORT], [test "x$TCXB7_PORT" = "xtrue"])

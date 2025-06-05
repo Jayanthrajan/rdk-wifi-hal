@@ -123,7 +123,7 @@ INT wifi_hal_getInterfaceMap(wifi_interface_name_idex_map_t *if_map, unsigned in
     return RETURN_OK;
 }
 
-INT wifi_hal_getHalCapability(wifi_hal_capability_t *hal)
+INT wifi_getHalCapability(wifi_hal_capability_t *hal)
 {
     unsigned int i;
     wifi_interface_info_t *interface;
@@ -384,7 +384,7 @@ INT wifi_hal_getHalCapability(wifi_hal_capability_t *hal)
     return RETURN_OK;
 }
 
-INT wifi_hal_setApWpsButtonPush(INT ap_index)
+INT wifi_setApWpsButtonPush(INT ap_index)
 {
     wifi_hal_info_print("%s:%d: WPS Push Button for radio index %d\n", __func__, __LINE__, ap_index);
 
@@ -393,7 +393,7 @@ INT wifi_hal_setApWpsButtonPush(INT ap_index)
     return 0;
 }
 
-INT wifi_hal_setApWpsCancel(INT ap_index)
+INT wifi_setApWpsCancel(INT ap_index)
 {
     wifi_hal_info_print("%s:%d: WPS Cancel session for radio index %d\n", __func__, __LINE__, ap_index);
 
@@ -415,7 +415,7 @@ INT wifi_hal_setApWpsPin(INT ap_index, char *wps_pin)
     return (wifi_hal_nl80211_wps_pin(ap_index, wps_pin));
 }
 
-INT wifi_hal_init()
+INT wifi_init()
 {
 #ifndef CONFIG_WIFI_EMULATOR
     unsigned int i;
@@ -692,9 +692,9 @@ void wifi_hal_deauth(int vap_index, int status, uint8_t *mac)
 }
 
 #if defined(CONFIG_IEEE80211BE) && defined(SCXER10_PORT) && defined(KERNEL_NO_320MHZ_SUPPORT)
-INT _wifi_hal_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam);
+INT _wifi_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam);
 
-INT wifi_hal_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam)
+INT wifi_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam)
 {
     int status;
     bool b_320mhz = false;
@@ -721,9 +721,9 @@ INT wifi_hal_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_op
     return status;
 }
 
-INT _wifi_hal_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam)
+INT _wifi_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam)
 #else
-INT wifi_hal_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam)
+INT wifi_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam)
 #endif
 {
     wifi_radio_info_t *radio;
@@ -1301,7 +1301,7 @@ INT wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
 
 INT _wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
 #else
-INT wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
+INT wifi_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
 #endif
 {
     wifi_radio_info_t *radio;
@@ -1687,7 +1687,7 @@ INT wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
     return ret;
 }
 
-INT wifi_hal_kickAssociatedDevice(INT ap_index, mac_address_t mac)
+INT wifi_kickAssociatedDevice(INT ap_index, mac_address_t mac)
 {
     wifi_interface_info_t *interface;
 
@@ -1908,7 +1908,7 @@ INT wifi_hal_getScanResults(wifi_radio_index_t index, wifi_channel_t *channel, w
 }
 
 #ifdef WIFI_HAL_VERSION_3_PHASE2
-INT wifi_hal_addApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
+INT wifi_addApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
 {
     wifi_interface_info_t *interface = NULL;
     wifi_vap_info_t *vap;
@@ -1972,7 +1972,7 @@ INT wifi_hal_addApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
     return 0;
 }
 #else
-INT wifi_hal_addApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
+INT wifi_addApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
 {
     wifi_interface_info_t *interface = NULL;
     wifi_vap_info_t *vap;
@@ -2036,7 +2036,7 @@ INT wifi_hal_addApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
 #endif
 
 #ifdef WIFI_HAL_VERSION_3_PHASE2
-INT wifi_hal_delApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
+INT wifi_delApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
 {
     wifi_interface_info_t *interface = NULL;
     wifi_vap_info_t *vap;
@@ -2091,7 +2091,7 @@ INT wifi_hal_delApAclDevice(INT apIndex, mac_address_t DeviceMacAddress)
     return 0;
 }
 #else
-INT wifi_hal_delApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
+INT wifi_delApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
 {
     wifi_interface_info_t *interface = NULL;
     wifi_vap_info_t *vap;
@@ -2143,7 +2143,7 @@ INT wifi_hal_delApAclDevice(INT apIndex, CHAR *DeviceMacAddress)
 }
 #endif
 
-INT wifi_hal_delApAclDevices(INT apIndex)
+INT wifi_delApAclDevices(INT apIndex)
 {
     wifi_interface_info_t *interface = NULL;
     wifi_vap_info_t *vap;
@@ -2187,7 +2187,7 @@ INT wifi_hal_delApAclDevices(INT apIndex)
     return nl80211_set_acl(interface);
 }
 
-INT wifi_hal_getApAclDeviceNum(INT apIndex, uint *aclCount)
+INT wifi_getApAclDeviceNum(INT apIndex, uint *aclCount)
 {
     if (aclCount == NULL) {
         wifi_hal_dbg_print("%s:%d: aclCount is NULL\n", __func__, __LINE__);
@@ -2196,7 +2196,7 @@ INT wifi_hal_getApAclDeviceNum(INT apIndex, uint *aclCount)
     return wifi_drv_getApAclDeviceNum(apIndex, aclCount) ? RETURN_ERR : RETURN_OK;
 }
 
-INT wifi_hal_setRadioTransmitPower(wifi_radio_index_t radioIndex, uint txpower)
+INT wifi_setRadioTransmitPower(wifi_radio_index_t radioIndex, uint txpower)
 {
     wifi_radio_info_t *radio;
     wifi_interface_info_t *interface;
@@ -3427,7 +3427,7 @@ static int build_candidates_list(const wifi_BTMRequest_t *request, u8 *nei_rep, 
 /* See 9.6.14.9 BSS Transition Management Request.
    NOTE: peerMac expects MAC address in 6-byte binary format
 */
-INT wifi_hal_setBTMRequest(UINT apIndex, mac_address_t peerMac, wifi_BTMRequest_t *request)
+INT wifi_setBTMRequest(UINT apIndex, char *peerMac, wifi_BTMRequest_t *request)
 {
     wifi_interface_info_t *interface;
     u8 requestMode = request->requestMode;
@@ -3551,8 +3551,8 @@ exit:
 //static uint8_t g_DialogToken[MAX_AP_INDEX][MAX_TOKENS + 1] = {{0}};
 u8_bitmap g_DialogToken[MAX_AP_INDEX] = {{0}};
 
-INT wifi_hal_setRMBeaconRequest(UINT apIndex,
-                            mac_address_t peer_mac,
+INT wifi_setRMBeaconRequest(UINT apIndex,
+                            char *peer_mac,
                             wifi_BeaconRequest_t *in_req,
                             UCHAR *out_DialogToken)
 {
@@ -3726,7 +3726,7 @@ INT wifi_hal_setRMBeaconRequest(UINT apIndex,
     return WIFI_HAL_SUCCESS;
 }
 
-INT wifi_hal_cancelRMBeaconRequest(UINT apIndex, UCHAR dialogToken)
+INT wifi_cancelRMBeaconRequest(UINT apIndex, UCHAR dialogToken)
 {
     // - verify input params
     if (_IS_INVALID_ARG(apIndex >= MAX_AP_INDEX)) {
@@ -3787,7 +3787,7 @@ static inline void wpabuf_put_le64(struct wpabuf *buf, u64 data)
 }
 #endif // HOSTAPD_VERSION < 210
 
-INT wifi_hal_setNeighborReports(UINT apIndex, UINT numNeighborReports, wifi_NeighborReport_t *neighborReports)
+INT wifi_setNeighborReports(UINT apIndex, UINT numNeighborReports, wifi_NeighborReport_t *neighborReports)
 {
     wifi_interface_info_t *interface;
     struct hostapd_data *hapd;
@@ -4049,7 +4049,7 @@ INT wifi_hal_mgmt_frame_callbacks_register(wifi_receivedMgmtFrame_callback func)
     return 0;
 }
 
-void wifi_hal_newApAssociatedDevice_callback_register(wifi_newApAssociatedDevice_callback func)
+void wifi_newApAssociatedDevice_callback_register(wifi_newApAssociatedDevice_callback func)
 {
     wifi_device_callbacks_t *callbacks;
 
@@ -4063,7 +4063,7 @@ void wifi_hal_newApAssociatedDevice_callback_register(wifi_newApAssociatedDevice
     callbacks->num_assoc_cbs++;
 }
 
-void wifi_hal_apDeAuthEvent_callback_register(wifi_apDeAuthEvent_callback func)
+void wifi_apDeAuthEvent_callback_register(wifi_apDeAuthEvent_callback func)
 {
     wifi_device_callbacks_t *callbacks;
 
@@ -4077,7 +4077,7 @@ void wifi_hal_apDeAuthEvent_callback_register(wifi_apDeAuthEvent_callback func)
     callbacks->num_apDeAuthEvent_cbs++;
 }
 
-INT wifi_vapstatus_callback_register(wifi_vapstatus_callback func) {
+INT wifi_hal_vapstatus_callback_register(wifi_vapstatus_callback func) {
     wifi_device_callbacks_t *callbacks;
 
     callbacks = get_hal_device_callbacks();
@@ -4103,7 +4103,7 @@ void wifi_hal_ap_max_client_rejection_callback_register(wifi_apMaxClientRejectio
     callbacks->max_cli_rejection_cb = func;
 }
 
-void wifi_hal_apDisassociatedDevice_callback_register(wifi_apDisassociatedDevice_callback func)
+void wifi_apDisassociatedDevice_callback_register(wifi_apDisassociatedDevice_callback func)
 {
     wifi_device_callbacks_t *callbacks;
 
@@ -4226,7 +4226,7 @@ void wifi_csi_callback_register(wifi_csi_callback callback_proc)
 }
 #endif
 
-INT wifi_hal_steering_eventRegister(wifi_steering_eventCB_t event_cb)
+INT wifi_steering_eventRegister(wifi_steering_eventCB_t event_cb)
 {
     wifi_device_callbacks_t *callbacks;
     callbacks = get_hal_device_callbacks();
@@ -4240,7 +4240,7 @@ INT wifi_hal_steering_eventRegister(wifi_steering_eventCB_t event_cb)
     return 0;
 }
 
-INT wifi_hal_RMBeaconRequestCallbackUnregister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback)
+INT wifi_RMBeaconRequestCallbackUnregister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback)
 {
     wifi_device_callbacks_t *callbacks;
 
@@ -4258,7 +4258,7 @@ INT wifi_hal_RMBeaconRequestCallbackUnregister(UINT apIndex, wifi_RMBeaconReport
     return RETURN_OK;
 }
 
-INT wifi_hal_BTMQueryRequest_callback_register(UINT apIndex,
+INT wifi_BTMQueryRequest_callback_register(UINT apIndex,
                                             wifi_BTMQueryRequest_callback btmQueryCallback,
                                             wifi_BTMResponse_callback btmResponseCallback)
 {
@@ -4276,7 +4276,7 @@ INT wifi_hal_BTMQueryRequest_callback_register(UINT apIndex,
     return RETURN_OK;
 }
 
-INT wifi_hal_RMBeaconRequestCallbackRegister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback)
+INT wifi_RMBeaconRequestCallbackRegister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback)
 {
     wifi_device_callbacks_t *callbacks;
 
@@ -4436,7 +4436,7 @@ bool is_db_upgrade_required(char* inactive_firmware)
     return false;
 }
 
-int wifi_hal_setApMacAddressControlMode(uint32_t apIndex, uint32_t mac_filter_mode)
+int wifi_setApMacAddressControlMode(uint32_t apIndex, uint32_t mac_filter_mode)
 {
     wifi_interface_info_t *interface = get_interface_by_vap_index(apIndex);
     if (interface == NULL) {

@@ -798,7 +798,7 @@ typedef struct {
     wifi_steering_clientConfig_t  bm_client_cfg;
 } bm_sta_list_t;
 
-INT wifi_hal_init();
+INT wifi_init();
 INT wifi_hal_pre_init();
 #if HAL_IPC
 INT wifi_hal_post_init(wifi_hal_post_init_t *post_init_struct);
@@ -813,50 +813,50 @@ INT wifi_hal_send_mgmt_frame_response(int ap_index, int type, int status, int st
 void wifi_hal_deauth(int vap_index, int status, uint8_t *mac);
 INT wifi_hal_getInterfaceMap(wifi_interface_name_idex_map_t *if_map, unsigned int max_entries,
     unsigned int *if_map_size);
-INT wifi_hal_getHalCapability(wifi_hal_capability_t *hal);
+INT wifi_getHalCapability(wifi_hal_capability_t *hal);
 INT wifi_hal_connect(INT ap_index, wifi_bss_info_t *bss);
-INT wifi_hal_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam);
-INT wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map);
-INT wifi_hal_kickAssociatedDevice(INT ap_index, mac_address_t mac);
+INT wifi_setRadioOperatingParameters(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam);
+INT wifi_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map);
+INT wifi_kickAssociatedDevice(INT ap_index, mac_address_t mac);
 INT wifi_hal_startScan(wifi_radio_index_t index, wifi_neighborScanMode_t scan_mode, INT dwell_time, UINT num, UINT *chan_list);
 INT wifi_hal_disconnect(INT ap_index);
-INT wifi_hal_getRadioVapInfoMap(wifi_radio_index_t index, wifi_vap_info_map_t *map);
-INT wifi_hal_setApWpsButtonPush(INT apIndex);
-INT wifi_hal_setApWpsPin(INT ap_index, char *wps_pin);
+INT wifi_getRadioVapInfoMap(wifi_radio_index_t index, wifi_vap_info_map_t *map);
+INT wifi_setApWpsButtonPush(INT apIndex);
+INT wifi_setApWpsPin(INT ap_index, char *wps_pin);
 INT wifi_hal_setApWpsCancel(INT ap_index);
 INT wifi_hal_set_acs_keep_out_chans(wifi_radio_operationParam_t *wifi_radio_oper_param, int radioIndex);
 INT wifi_hal_sendDataFrame(int vap_id, unsigned char *dmac, unsigned char *data_buff, int data_len, BOOL insert_llc, int protocal, int priority);
+int wifi_hal_startNeighborScan(INT apIndex, wifi_neighborScanMode_t scan_mode, INT dwell_time, UINT chan_num, UINT *chan_list);
 #ifdef WIFI_HAL_VERSION_3_PHASE2
-INT wifi_hal_addApAclDevice(INT apIndex, mac_address_t DeviceMacAddress);
-INT wifi_hal_delApAclDevice(INT apIndex, mac_address_t DeviceMacAddress);
+INT wifi_addApAclDevice(INT apIndex, mac_address_t DeviceMacAddress);
+INT wifi_delApAclDevice(INT apIndex, mac_address_t DeviceMacAddress);
 #else
-INT wifi_hal_addApAclDevice(INT apIndex, CHAR *DeviceMacAddress);
-INT wifi_hal_delApAclDevice(INT apIndex, CHAR *DeviceMacAddress);
+INT wifi_addApAclDevice(INT apIndex, CHAR *DeviceMacAddress);
+INT wifi_delApAclDevice(INT apIndex, CHAR *DeviceMacAddress);
 #endif
-INT wifi_hal_delApAclDevices(INT apIndex);
-INT wifi_hal_steering_eventRegister(wifi_steering_eventCB_t event_cb);
-INT wifi_hal_setRadioTransmitPower(wifi_radio_index_t radioIndex, uint txpower);
-INT wifi_hal_getRadioTransmitPower(INT radioIndex, ULONG *tx_power);
-INT wifi_hal_startNeighborScan(INT apIndex, wifi_neighborScanMode_t scan_mode, INT dwell_time, UINT chan_num, UINT *chan_list);
+INT wifi_delApAclDevices(INT apIndex);
+INT wifi_steering_eventRegister(wifi_steering_eventCB_t event_cb);
+INT wifi_setRadioTransmitPower(INT radioIndex, ULONG txpower);
+INT wifi_getRadioTransmitPower(INT radioIndex, ULONG *tx_power);
 INT wifi_hal_getNeighboringWiFiStatus(INT radioIndex, wifi_neighbor_ap2_t **neighbor_ap_array, UINT *output_array_size);
 INT wifi_hal_getNeighboringWiFiStatus_test(INT radioIndex, wifi_neighbor_ap2_t **neighbor_ap_array, UINT *output_array_size);
-INT wifi_hal_setBTMRequest(UINT apIndex, mac_address_t peerMac, wifi_BTMRequest_t *request);
-INT wifi_hal_setRMBeaconRequest(UINT apIndex, mac_address_t peer_mac, wifi_BeaconRequest_t *in_req, UCHAR *out_DialogToken);
-INT wifi_hal_cancelRMBeaconRequest(UINT apIndex, UCHAR dialogToken);
+INT wifi_setBTMRequest(UINT apIndex, char *peerMac, wifi_BTMRequest_t *request);
+INT wifi_setRMBeaconRequest(UINT apIndex, char *peer_mac, wifi_BeaconRequest_t *in_req, UCHAR *out_DialogToken);
+INT wifi_cancelRMBeaconRequest(UINT apIndex, UCHAR dialogToken);
 INT wifi_hal_configNeighborReports(UINT apIndex, bool enable, bool auto_resp);
-INT wifi_hal_setNeighborReports(UINT apIndex, UINT numNeighborReports, wifi_NeighborReport_t *neighborReports);
-void wifi_hal_newApAssociatedDevice_callback_register(wifi_newApAssociatedDevice_callback func);
-void wifi_hal_apDisassociatedDevice_callback_register(wifi_apDisassociatedDevice_callback func);
+INT wifi_setNeighborReports(UINT apIndex, UINT numNeighborReports, wifi_NeighborReport_t *neighborReports);
+void wifi_newApAssociatedDevice_callback_register(wifi_newApAssociatedDevice_callback func);
+void wifi_apDisassociatedDevice_callback_register(wifi_apDisassociatedDevice_callback func);
 void wifi_hal_stamode_callback_register(wifi_stamode_callback func);
 void wifi_hal_radiusEapFailure_callback_register(wifi_radiusEapFailure_callback func);
 void wifi_hal_radiusFallback_failover_callback_register(wifi_radiusFallback_failover_callback func);
-void wifi_hal_apDeAuthEvent_callback_register(wifi_apDeAuthEvent_callback func);
+void wifi_apDeAuthEvent_callback_register(wifi_apDeAuthEvent_callback func);
 void wifi_hal_ap_max_client_rejection_callback_register(wifi_apMaxClientRejection_callback func);
-INT wifi_hal_BTMQueryRequest_callback_register(UINT apIndex,
+INT wifi_BTMQueryRequest_callback_register(UINT apIndex,
                                             wifi_BTMQueryRequest_callback btmQueryCallback,
                                             wifi_BTMResponse_callback btmResponseCallback);
-INT wifi_hal_RMBeaconRequestCallbackRegister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback);
-INT wifi_hal_RMBeaconRequestCallbackUnregister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback);
+INT wifi_RMBeaconRequestCallbackRegister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback);
+INT wifi_RMBeaconRequestCallbackUnregister(UINT apIndex, wifi_RMBeaconReport_callback beaconReportCallback);
 int wifi_rrm_send_beacon_resp(unsigned int ap_index, wifi_neighbor_ap2_t *bss, unsigned int num_ssid, unsigned int token,
                             unsigned int num_count);
 int wifi_hal_parse_rm_beacon_request(unsigned int apIndex, char* buff, size_t len,
