@@ -105,7 +105,7 @@ static unsigned char g_vapSmac[MAX_VAP][MAC_ADDRESS_LEN] = {'\0'};
 #ifdef CONFIG_WIFI_EMULATOR
 extern const struct wpa_driver_ops g_wpa_supplicant_driver_nl80211_ops;
 #endif
-
+extern wifi_hal_selector_info_t g_hal_selector;
 #if !defined(CMXB7_PORT)
 wifi_hal_priv_t g_wifi_hal;
 #endif
@@ -123,7 +123,7 @@ INT wifi_hal_getInterfaceMap(wifi_interface_name_idex_map_t *if_map, unsigned in
     return RETURN_OK;
 }
 
-INT wifi_hal_getHalCapability(wifi_hal_capability_t *hal)
+INT nl_hal_getHalCapability(wifi_hal_capability_t *hal)
 {
     unsigned int i;
     wifi_interface_info_t *interface;
@@ -559,6 +559,7 @@ INT wifi_hal_init()
 
 INT wifi_hal_pre_init()
 {
+    init_hal_selector();
     platform_pre_init_t  pre_init_fn;
     if ((pre_init_fn = get_platform_pre_init_fn()) != NULL) {
         wifi_hal_info_print("%s:%d: platfrom pre init\n", __func__, __LINE__);
@@ -1276,10 +1277,32 @@ int get_sta_4addr_status(bool *sta_4addr)
     return json_parse_boolean(EM_CFG_FILE, "sta_4addr_mode_enabled", sta_4addr);
 }
 
+INT wifi_test_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
+{
+    if (map == NULL) {
+        wifi_hal_error_print("%s:%d: NULL Pointer \n", __func__, __LINE__);
+        return RETURN_ERR;
+    }
+    wifi_hal_error_print("%s:%d: radio index:%d failed not find radio\n", __func__, __LINE__,
+        index);
+    return RETURN_OK;
+}
+
+INT wifi_test_getHalCapability(wifi_hal_capability_t *hal)
+{
+    if (hal == NULL) {
+        wifi_hal_error_print("%s:%d: NULL Pointer \n", __func__, __LINE__);
+        return RETURN_ERR;        
+    }
+
+    wifi_hal_error_print("%s:%d: SUCCESS\n", __func__, __LINE__);
+    return RETURN_OK;
+}
+
 #if defined(SCXER10_PORT) && defined(CONFIG_IEEE80211BE) && defined(KERNEL_NO_320MHZ_SUPPORT)
 INT _wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map);
 
-INT wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
+INT nl_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
 {
     int status;
     bool b_320mhz = false;

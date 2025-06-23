@@ -805,10 +805,6 @@ INT wifi_hal_post_init(wifi_hal_post_init_t *post_init_struct);
 #else
 INT wifi_hal_post_init(wifi_vap_info_map_t *vap_map);
 #endif
-INT wifi_hal_ssid_init(char *ssid, int vap_index);
-INT wifi_hal_keypassphrase_init(char *password, int vap_index);
-INT wifi_hal_wps_pin_init(char *pin);
-INT wifi_hal_hostApGetErouter0Mac(char *out);
 INT wifi_hal_send_mgmt_frame_response(int ap_index, int type, int status, int status_code, uint8_t *frame, uint8_t *mac, int len, int rssi);
 void wifi_hal_deauth(int vap_index, int status, uint8_t *mac);
 INT wifi_hal_getInterfaceMap(wifi_interface_name_idex_map_t *if_map, unsigned int max_entries,
@@ -1326,6 +1322,7 @@ void update_interfaces_map(unsigned int phy_index, unsigned int interface_radio_
 void update_interface_names(unsigned int phy_index, char *interface_name);
 #endif
 
+void init_hal_selector();
 int _syscmd(char *cmd, char *retBuf, int retBufSize);
 static inline enum nl80211_iftype wpa_driver_nl80211_if_type(enum wpa_driver_if_type type)
 {

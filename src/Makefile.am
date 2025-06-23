@@ -52,7 +52,7 @@ librdk_wifihal_la_LDFLAGS = -lm -lcjson -lssl -lcrypto
 
 if ONE_WIFIBUILD
 librdk_wifihal_la_LDFLAGS += -lhostap -lnl-3 -lnl-genl-3 -lnl-route-3
-librdk_wifihal_la_SOURCES += wifi_hal.c wifi_hal_hostapd.c wifi_hal_nl80211.c wifi_hal_nl80211_events.c wifi_hal_nl80211_utils.c collection.c wifi_hal_mgmt_rx_one_wifi.c wifi_hal_wnm_rrm.c
+librdk_wifihal_la_SOURCES += wifi_hal.c wifi_hal_selector.c wifi_hal_hostapd.c wifi_hal_nl80211.c wifi_hal_nl80211_events.c wifi_hal_nl80211_utils.c collection.c wifi_hal_mgmt_rx_one_wifi.c wifi_hal_wnm_rrm.c
 else
 librdk_wifihal_la_SOURCES += wifi_hal_mgmt_rx.c
 endif
