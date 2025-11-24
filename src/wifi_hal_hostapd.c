@@ -1136,6 +1136,20 @@ int update_hostap_bss(wifi_interface_info_t *interface)
         
     conf->ssid.utf8_ssid = 0;
 
+#ifdef CONFIG_IEEE80211AX
+    conf->ifcae.he_op.he_rts_threshold = 0;
+    conf->iface.he_op.he_default_pe_duration = 4;
+#if HOSTAPD_VERSION >= 210
+    conf->iface.he_op.he_er_su_disable = 1;
+    conf->iface.he_op.he_bss_color_disabled = 0;
+    conf->iface.he_op.he_cohosted_bss = radio->oper_param.band != WIFI_FREQUENCY_6_BAND;
+    conf->iface.he_op.he_max_cohosted_bssid = 3;
+    conf->iface.reg_def_cli_eirp = 24 * 2; // 24 dBm
+
+    /* Set default basic MCS/NSS set to single stream MCS 0-7 */
+    conf->iface.he_op.he_basic_mcs_nss_set = 0xfffc;
+#endif
+#endif // CONFIG_IEEE80211AX
     //dtim_period
     conf->dtim_period = op_param->dtimPeriod;
 
@@ -2040,7 +2054,7 @@ int update_hostap_config_params(wifi_radio_info_t *radio)
     iconf->he_op.he_default_pe_duration = 4;
 #if HOSTAPD_VERSION >= 210
     iconf->he_op.he_er_su_disable = 1;
-    iconf->he_op.he_bss_color_disabled = 1;
+    iconf->he_op.he_bss_color_disabled = 0;
     iconf->he_op.he_cohosted_bss = radio->oper_param.band != WIFI_FREQUENCY_6_BAND;
     iconf->he_op.he_max_cohosted_bssid = 3;
     iconf->reg_def_cli_eirp = 24 * 2; // 24 dBm
