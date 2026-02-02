@@ -17299,6 +17299,11 @@ int nl80211_dfs_radar_detected (wifi_interface_info_t *interface, int freq, int 
     wifi_hal_info_print("%s:%d name:%s freq:%d cf1:%d cf2:%d sec_chan:%d bandwidth:%d ht_enabled:%d \n", __func__, __LINE__,
                     interface->name, freq, cf1, cf2, sec_chan_offset, bw, ht_enabled);
 
+    if (!interface->vap_info.u.bss_info.hostap_mgt_frame_ctrl) {
+		wifi_hal_info_print("%s:%d channel change is offloaded to driver\n", __func__, __LINE__);
+        return 0;
+    }
+
     radio = get_radio_by_rdk_index(interface->vap_info.radio_index);
 
     if (((radio->oper_param.channel < dfs_start) || (radio->oper_param.channel > dfs_end)) &&
