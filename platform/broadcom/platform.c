@@ -1949,6 +1949,14 @@ static int platform_set_hostap_ctrl(wifi_radio_info_t *radio, uint vap_index, in
         return RETURN_ERR;
     }
 
+    if (wl_iovar_set(interface_name, "dfs_auto_channel_change_disable", &enable, sizeof(enable)) <
+        0) {
+        wifi_hal_error_print(
+            "%s:%d failed to set dfs_auto_channel_change_disable %d for %s, err: %d (%s)\n",
+            __func__, __LINE__, enable, interface_name, errno, strerror(errno));
+        return RETURN_ERR;
+    }
+
     maclist->count = 0;
     if (wl_ioctl(interface_name, WLC_SET_PROBE_FILTER, maclist, sizeof(maclist->count)) < 0) {
         wifi_hal_error_print("%s:%d failed to reset probe filter for %s, err: %d (%s)\n", __func__,
