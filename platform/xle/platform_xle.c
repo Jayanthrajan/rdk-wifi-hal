@@ -728,7 +728,17 @@ int wifi_setApRetrylimit(void *priv)
 
 int platform_set_dfs(wifi_radio_index_t index, wifi_radio_operationParam_t *operationParam)
 {
-    return 0;
+    wifi_hal_info_print("%s:%d DfsEnabled:%u \n", __func__, __LINE__, operationParam->DfsEnabled);
+    if (wifi_setRadioDfsEnable(index, operationParam->DfsEnabled) != RETURN_OK) {
+        wifi_hal_error_print("%s:%d RadioDfsEnable Failed\n", __func__, __LINE__);
+        return RETURN_ERR;
+    }
+
+    if (wifi_applyRadioSettings(index) != RETURN_OK) {
+        wifi_hal_error_print("%s:%d applyRadioSettings Failed\n", __func__, __LINE__);
+        return RETURN_ERR;
+    }
+    return RETURN_OK;
 }
 
 #if defined(FEATURE_HOSTAP_MGMT_FRAME_CTRL)
