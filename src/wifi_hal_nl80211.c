@@ -5587,7 +5587,12 @@ static void wiphy_info_mbssid(struct wpa_driver_capa *cap, struct nlattr *attr)
     }
 
     cap->mbssid_max_interfaces = nla_get_u8(config[NL80211_MBSSID_CONFIG_ATTR_MAX_INTERFACES]);
-
+#if defined(SCXF10_PORT)
+    /* Driver is sending max_mbssid_ind as 4 which is causing connectivity issues */
+    if (cap->mbssid_max_interfaces < MAX_MBSSID_INTERFACES) {
+	    cap->mbssid_max_interfaces = MAX_MBSSID_INTERFACES;
+    }
+#endif //SCXF10_PORT
     if (config[NL80211_MBSSID_CONFIG_ATTR_MAX_EMA_PROFILE_PERIODICITY] != NULL) {
         cap->ema_max_periodicity = nla_get_u8(
             config[NL80211_MBSSID_CONFIG_ATTR_MAX_EMA_PROFILE_PERIODICITY]);
