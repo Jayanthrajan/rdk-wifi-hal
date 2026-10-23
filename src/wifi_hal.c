@@ -1505,8 +1505,16 @@ INT wifi_hal_createVAP(wifi_radio_index_t index, wifi_vap_info_map_t *map)
         // VAP down removes MLO links, so restrict down of interface to sta mode only
         if (vap->vap_mode == wifi_vap_mode_sta) {
 #endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 00)
+        /* Bringing down interface is causing the beacon interval to reset,
+          which is causing stop_ap to fail in kernel*/
+        if (!(interface->vap_initialized && interface->bss_started)) {
+#endif
             wifi_hal_info_print("%s:%d: interface:%s set down\n", __func__, __LINE__, interface->name);
             nl80211_interface_enable(interface->name, false);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 00)
+        }
+#endif // LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 00)
 #ifdef CONFIG_GENERIC_MLO
         }
 #endif
